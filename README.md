@@ -27,7 +27,7 @@ source venv/Scripts/activate
 Once in the environment, install the package in editable mode and install a kernel for use with Jupyter notebooks:
 
 ```bash
-pip install -e .
+pip install -e .[dev]
 python -m ipykernel install --user --name=scheduler
 ```
 
