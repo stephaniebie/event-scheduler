@@ -31,6 +31,8 @@ class Event:
         self.time = time
         self.location = location
 
+    # TODO add dunder eq, ne, and gt to be used for checking conflicts / overlaps
+
 
 class EventNode(Event):
     """

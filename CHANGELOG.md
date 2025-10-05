@@ -12,6 +12,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Add `Event` and `EventNode` classes for establishing two unique data types
 - Add `EventList` and `LinkedEventList` classes for storing events
 - Add `SortingAlgorithm` class and associated functions for defining different ways to sort an event list using the `sort_data` function
+- Add `SearchAlgorithm` class and associated functions for defining different ways to search an event list for a specific ID using the `search_data` function
 
 ### Changed
 - Update README.md
