@@ -1,7 +1,7 @@
 # PART B: Sorting Events
 # Implementation of three sorting algorithms
 from enum import Enum
-from scheduler.events import EventList, LinkedEventList
+from scheduler.eventlist import EventList, LinkedEventList
 
 
 def insertion_sort(data):

@@ -1,3 +1,4 @@
 from .event import Event, EventNode
-from .events import EventList, LinkedEventList
-from .sorter import sort_data, SortingAlgorithm
+from .eventlist import EventList, LinkedEventList
+from .search import search_data, SearchAlgorithm
+from .sort import sort_data, SortingAlgorithm
