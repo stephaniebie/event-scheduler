@@ -2,6 +2,7 @@ class Event:
     """
     A unique campus event.
     """
+
     def __init__(
         self,
         id: int,
@@ -30,10 +31,12 @@ class Event:
         self.time = time
         self.location = location
 
-class LinkedEvent(Event):
+
+class EventNode(Event):
     """
-    An event node for storage within a linked list.
+    A unique campus event node for storage within a linked list.
     """
+
     def __init__(
         self,
         id: int,

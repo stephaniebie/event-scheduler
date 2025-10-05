@@ -9,7 +9,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 - Add general project structure
-- Add `Event` and `LinkedEvent` classes
+- Add `Event` and `EventNode` classes for establishing two unique data types
+- Add `EventList` and `LinkedEventList` classes for storing events
+- Add `SortingAlgorithm` class and associated functions for defining different ways to sort an event list using the `sort_data` function
 
 ### Changed
 - Update README.md
