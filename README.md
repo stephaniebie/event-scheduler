@@ -7,8 +7,6 @@ Written and maintained by Group 10:
 - Dnyanada Bhosale
 - Augustine Joy
 
-[[_TOC_]]
-
 ## Setup
 
 Open a new terminal, navigate to a preferred directory, and clone the repository (for more information see this <a href="https://docs.github.com/en/get-started/git-basics/about-remote-repositories">tutorial</a>. I recommend following the "Cloning with SSH URLs" section):
