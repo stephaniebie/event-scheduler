@@ -74,6 +74,7 @@ class EventList:
                 index -= 1
         self.events = [e for i, e in enumerate(self.events) if i != index]
         self.events += [None]
+        self.size -= 1
 
     def search_by_id(
         self, id: int, algorithm: SearchAlgorithm = SearchAlgorithm.BINARY
