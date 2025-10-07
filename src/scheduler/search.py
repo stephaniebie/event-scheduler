@@ -1,67 +1,88 @@
 # PART C: Searching & Conflict Detection
 # Implements linear and binary search as well as an algorithm for checking if two or more events overlap in time
-from enum import Enum
-from scheduler.eventlist import EventList, LinkedEventList
+from enum import Enum, member
+from scheduler.event import Event, EventNode
+from scheduler.sort import sort_data
 
 
-def linear_search(data, target):
-    raise NotImplementedError
-    n = len(data)
-    
-    # Iterate over the array in order to
-    # find the key x
-    for i in range(0, n):
-        if (arr[i] == target):
-            return i
-    return -1
-
-
-def binary_search(data, target):
-    raise NotImplementedError
-    low = 0
-    high = len(data) - 1
-    while low <= high:
-
-        mid = low + (high - low) // 2
-
-        # Check if x is present at mid
-        if arr[mid] == target:
-            return mid
-
-        # If x is greater, ignore left half
-        elif arr[mid] < target:
-            low = mid + 1
-
-        # If x is smaller, ignore right half
-        else:
-            high = mid - 1
-
-    # If we reach here, then the element
-    # was not present
-    return -1
-
-
-class SearchAlgorithm(Enum):
-    LINEAR = linear_search
-    BINARY = binary_search
-
-
-def search_data(
-    data: EventList | LinkedEventList,
-    id: int,
-    algorithm: SearchAlgorithm = SearchAlgorithm.BINARY,
-) -> EventList | LinkedEventList:
+def linear_search(data: list, target: int) -> Event | EventNode | None:
     """
-    Searches an event list using a specific algorithm.
+    Iteratively searches through a list of events for an event matching the target ID.
 
     Parameters
     ----------
-    data: EventList | LinkedEventList
-        An event list object
+    data: list
+        List of Event or EventNode objects
+    target: int
+        Unique event ID to search for
+
+    Returns
+    -------
+    The found Event or EventNode
+    """
+    for datum in data:
+        if datum.id == target:
+            return datum
+    return None
+
+
+def binary_search(data: list, target: int) -> Event | EventNode | None:
+    """
+    Searches through a list of events for an event matching the target ID using the classic binary search algorithm.
+
+    Parameters
+    ----------
+    data: list
+        List of Event or EventNode objects
+    target: int
+        Unique event ID to search for
+
+    Returns
+    -------
+    The found Event or EventNode
+    """
+    # Ensure the data is sorted
+    data = sort_data(data)
+
+    # Classic binary search algorithm
+    left_index, right_index = 0, len(data) - 1
+    while left_index <= right_index:
+        middle_index = (left_index + right_index) // 2
+        datum = data[middle_index]
+        if datum.id == target:
+            return datum
+        elif datum.id < target:
+            left_index = middle_index + 1
+        else:
+            right_index = middle_index - 1
+    return None
+
+
+class SearchAlgorithm(Enum):
+    LINEAR = member(linear_search)
+    BINARY = member(binary_search)
+
+
+def search_data(
+    data: list[Event | EventNode],
+    id: int,
+    algorithm: SearchAlgorithm = SearchAlgorithm.BINARY,
+) -> Event | EventNode | None:
+    """
+    Searches for an event using a specific algorithm.
+
+    Parameters
+    ----------
+    data: list
+        List of events
     id: int
         A unique event ID to search for
     algorithm: SearchAlgorithm
         Enumeration value for a search algorithm
+
+    Returns
+    -------
+    Found event as either an Event object, an EventNode object, or a Nonetype if not found
     """
     # Further enforces the algorithm enumeration
     if algorithm not in list(SearchAlgorithm):
