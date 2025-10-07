@@ -57,10 +57,23 @@ class EventList:
             self.size += 1
         self.events[index] = item
 
-    def delete(self):
-        """ """
-        # TODO
-        raise NotImplementedError
+    def delete(self, index: int = -1):
+        """
+        Remove an item fom the event list at a certain index. Defaults to removing last item in list.
+
+        Parameters
+        ----------
+        index: int
+            The index at which to remove an event
+        """
+        if index + 1 > self.size:
+            raise IndexError(f"Index {index} is out of range")
+        if index == -1:
+            index = self.size
+            if self.size > 0:
+                index -= 1
+        self.events = [e for i, e in enumerate(self.events) if i != index]
+        self.events += [None]
 
     def search_by_id(
         self, id: int, algorithm: SearchAlgorithm = SearchAlgorithm.BINARY
