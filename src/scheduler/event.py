@@ -1,3 +1,5 @@
+import datetime
+
 class Event:
     """
     A unique campus event.
@@ -10,40 +12,37 @@ class Event:
         date: str,
         time: str,
         location: str,
-    ):
-        """
-        Attributes
-        ----------
-        id: int
-            A unique event ID
-        title: str
-            The title of the event
-        date: str
-            The date the event will take place in the form YYYY-MM-DD
-        time: str
-            The time the event will take place in the form HH:MM
-        datetime: tuple | None
-            A tuple composed of the inputted date and time
-        location: str
-            The location of the event
-        """
+    ):        
+        try:
+            self.start_time = datetime.datetime.strptime(f"{date} {time}", "%Y-%m-%d %H:%M")
+            self.end_time = self.start_time + datetime.timedelta(hours = 1)
+        except ValueError:
+            raise ValueError(f"Invalid date '{date}' or time '{time}'")
+
         self.id = id
         self.title = title
         self.location = location
         self.date = date
         self.time = time
-        self.datetime = None
 
-        # NOTE: Uses strict string splicing which assumes no errors with date and time inputs
-        #       If time permits, update this to catch possible invalid types or string formats
-        if len(date) == 10 and len(time) == 5:
-            # Date time of the form (year, month, day, hour, minute)
-            self.datetime = tuple(
-                int(d) for d in [date[:4], date[5:7], date[8:], time[:2], time[3:]]
-            )
+    def collides_with(self, other):
+        return self.start_time < other.end_time and other.start_time < self.end_time
 
-    # TODO add dunder eq, ne, and gt to be used for checking conflicts / overlaps
-
+    def __eq__(self, other):
+        if not isinstance(other, Event):
+            return NotImplemented
+        return self.start_time == other.start_time
+    
+    def __ne__(self, other):
+        if not isinstance(other, Event):
+            return NotImplemented
+        return self.start_time != other.start_time
+    
+    def __gt__(self, other):
+        if not isinstance(other, Event):
+            return NotImplemented
+        return self.start_time > other.start_time
+    
 
 class EventNode(Event):
     """
@@ -57,27 +56,8 @@ class EventNode(Event):
         date: str,
         time: str,
         location: str,
-        next: None | Event = None,
+        next: None | 'EventNode' = None,
     ):
-        """
-        Attributes
-        ----------
-        id: int
-            A unique event ID
-        title: str
-            The title of the event
-        date: str
-            The date the event will take place in the form YYYY-MM-DD
-        time: str
-            The time the event will take place in the form HH:MM
-        datetime: tuple | None
-            A tuple composed of the inputted date and time
-        location: str
-            The location of the event
-        next: None | Event
-            The next event in a linked list of events
-            If None, indicates the end of the list
-        """
         super().__init__(
             id=id,
             title=title,
