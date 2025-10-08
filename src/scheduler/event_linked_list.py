@@ -9,13 +9,13 @@ class LinkedEventList:
 
     def __init__(self):
         self.head = None
-        self.id = 1
+        self.id = 1             #This will sequentially generate unique ID
 
     def insert(self, new_event: EventNode):
         
         current = self.head
         while current:
-            if new_event.collides_with(current):
+            if new_event.collides_with(current):        #Calls collide_with function to check if new event collides with existing events
                 print("An event already exist at this time! Please enter different time.")
                 return None
             current = current.next
@@ -32,6 +32,8 @@ class LinkedEventList:
             last.next = new_event
         print(f"Successfully created new event: '{new_event.title} with ID: '{new_event.id}'")
         return new_event
+
+    #Below function deletes an event based on event ID and returns boolean
 
     def delete(self, event_id: int) -> bool:
         current = self.head
@@ -54,7 +56,7 @@ class LinkedEventList:
     def search_by_id(self, id: int, linear_search: bool):
 
         """I dont think binary search can be performed on Linked list since we can't randomly access index directly
-        So we will probably have to convert to list and perform binary search.
+        So we will probably have to convert it to a list and perform binary search.
         """
 
         if linear_search:

@@ -13,7 +13,8 @@ class Event:
         time: str,
         location: str,
     ):        
-        try:
+        # Checks whether date and time are valid inputs and returns None if its invalid.
+        try:        
             self.start_time = datetime.datetime.strptime(f"{date} {time}", "%Y-%m-%d %H:%M")
             self.end_time = self.start_time + datetime.timedelta(hours = 1)
         except ValueError:
@@ -25,7 +26,8 @@ class Event:
         self.date = date
         self.time = time
 
-    def collides_with(self, other):
+    # Function to check whether new event collides with other existing events.
+    def collides_with(self, other): 
         return self.start_time < other.end_time and other.start_time < self.end_time
 
     def __eq__(self, other):
