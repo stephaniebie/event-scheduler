@@ -40,7 +40,7 @@ class EventList:
         
         return False
 
-    def search_by_id(self, id: int, binary_search = True):
+    def search_by_id(self, id: int, binary_search: bool):
         
         if binary_search:
             return search_data.binary_search_list(self.events, id)
