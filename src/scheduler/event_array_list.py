@@ -40,11 +40,12 @@ class EventList:
         
         return False
 
-    def search_by_id(
-        self, id: int, algorithm: SearchAlgorithm = SearchAlgorithm.BINARY
-    ) -> Event:
-        # TODO
-        raise NotImplementedError
+    def search_by_id(self, id: int, binary_search = True):
+        
+        if binary_search:
+            return search_data.binary_search_list(self.events, id)
+        else:
+            return search_data.linear_search_list(self.events, id)
 
     def list_all(self) -> list:
        # TODO
