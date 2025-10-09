@@ -2,21 +2,30 @@ from scheduler.event import Event, EventNode
 from scheduler.search import search_data, SearchAlgorithm
 from scheduler.sort import sort_data, SortingAlgorithm
 
+
 class LinkedEventList:
     """
     A singly linked list of events.
+
+    Authors
+    -------
+    Augustine Joy
     """
 
     def __init__(self):
         self.head = None
-        self.id = 1             #This will sequentially generate unique ID
+        self.id = 1  # This will sequentially generate unique ID
 
     def insert(self, new_event: EventNode):
-        
+
         current = self.head
         while current:
-            if new_event.collides_with(current):        #Calls collide_with function to check if new event collides with existing events
-                print("An event already exist at this time! Please enter different time.")
+            if new_event.collides_with(
+                current
+            ):  # Calls collide_with function to check if new event collides with existing events
+                print(
+                    "An event already exist at this time! Please enter different time."
+                )
                 return None
             current = current.next
 
@@ -30,12 +39,30 @@ class LinkedEventList:
             while last.next:
                 last = last.next
             last.next = new_event
-        print(f"Successfully created new event: '{new_event.title} with ID: '{new_event.id}'")
+        print(
+            f"Successfully created new event: '{new_event.title} with ID: '{new_event.id}'"
+        )
         return new_event
 
-    #Below function deletes an event based on event ID and returns boolean
+    # Below function deletes an event based on event ID and returns boolean
 
     def delete(self, event_id: int) -> bool:
+        """
+        Deletes an event based on event ID and returns a boolean.
+
+        Parameters
+        ----------
+        event_id: int
+            Event ID to be deleted
+
+        Returns
+        -------
+        Boolean
+
+        Authors
+        -------
+        Augustine Joy
+        """
         current = self.head
         previous = None
 
@@ -45,7 +72,7 @@ class LinkedEventList:
 
         if current is None:
             return False
-        
+
         if previous is None:
             self.head = current.next
         else:
@@ -54,7 +81,6 @@ class LinkedEventList:
         return True
 
     def search_by_id(self, id: int, linear_search: bool):
-
         """I dont think binary search can be performed on Linked list since we can't randomly access index directly
         So we will probably have to convert it to a list and perform binary search.
         """
@@ -68,4 +94,3 @@ class LinkedEventList:
     def list_all(self) -> list:
         # TODO
         raise NotImplementedError
-

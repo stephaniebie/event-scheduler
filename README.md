@@ -46,6 +46,8 @@ pip install .
 
 ## Development
 
+<b>NOTE FOR COLLABORATORS: Please don't delete docstrings!!! (And please write them when they're missing!!)</b>
+
 Navigate to the directory the local repo is located in, and open a terminal at this location.
 
 For all developers, I recommend creating a new branch using the following command:
@@ -54,7 +56,7 @@ For all developers, I recommend creating a new branch using the following comman
 git checkout -b your-branch-name
 ```
 
-It is generally bad practice to push to a main branch, especially in a collaborative environment.
+<b>IMPORTANT: It is generally bad practice to push to a main branch, especially in a collaborative environment!! Please please please make a new branch and create a pull request.</b>
 
 Enter the virtual environment created earlier:
 
@@ -103,3 +105,5 @@ To exit the virtual environment, type `deactivate` in the terminal.
 
 # TODO: ADD SETUP DISCUSSION HERE
 # TODO: ADD RESULTS DISCUSSION HERE
+
+<sub><i>README Author: Stephanie Bie</i></sub>

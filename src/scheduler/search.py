@@ -4,6 +4,7 @@ from enum import Enum, member
 from scheduler.event import Event, EventNode
 from scheduler.sort import sort_data
 
+# TODO implement for linked lists
 
 def linear_search(data: list, target: int) -> Event | EventNode | None:
     """
@@ -18,11 +19,19 @@ def linear_search(data: list, target: int) -> Event | EventNode | None:
 
     Returns
     -------
-    The found Event or EventNode
+    The found Event or EventNode, else None if not found
+
+    Authors
+    -------
+    Dnyanada Bhosale
     """
-    for datum in data:
-        if datum.id == target:
-            return datum
+    n = len(data)
+
+    # Iterate over the array in order to
+    # find the key x
+    for i in range(0, n):
+        if data[i].id == target:
+            return data[i]
     return None
 
 
@@ -39,26 +48,48 @@ def binary_search(data: list, target: int) -> Event | EventNode | None:
 
     Returns
     -------
-    The found Event or EventNode
+    The found Event or EventNode, else None if not found
+
+    Authors
+    -------
+    Dnyanada Bhosale
     """
     # Ensure the data is sorted
     data = sort_data(data)
 
-    # Classic binary search algorithm
-    left_index, right_index = 0, len(data) - 1
-    while left_index <= right_index:
-        middle_index = (left_index + right_index) // 2
-        datum = data[middle_index]
-        if datum.id == target:
-            return datum
-        elif datum.id < target:
-            left_index = middle_index + 1
+    # Initialize indices
+    low = 0
+    high = len(data) - 1
+    while low <= high:
+
+        mid = low + (high - low) // 2
+
+        # Check if x is present at mid
+        if data[mid].id == target:
+            return data[mid]
+
+        # If x is greater, ignore left half
+        elif data[mid].id < target:
+            low = mid + 1
+
+        # If x is smaller, ignore right half
         else:
-            right_index = middle_index - 1
+            high = mid - 1
+
+    # If we reach here, then the element
+    # was not present
     return None
 
 
 class SearchAlgorithm(Enum):
+    """
+    Enumeration of different search algorithms.
+
+    Authors
+    -------
+    Stephanie Bie
+    """
+
     LINEAR = member(linear_search)
     BINARY = member(binary_search)
 
@@ -83,6 +114,10 @@ def search_data(
     Returns
     -------
     Found event as either an Event object, an EventNode object, or a Nonetype if not found
+
+    Authors
+    -------
+    Stephanie Bie
     """
     # Further enforces the algorithm enumeration
     if algorithm not in list(SearchAlgorithm):
@@ -90,6 +125,3 @@ def search_data(
 
     # Searches the data using the specified algorithm
     return algorithm.value(data=data, target=id)
-
-
-# TODO conflict implementation
