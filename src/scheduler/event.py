@@ -1,3 +1,6 @@
+from scheduler.utils import create_datetime_tuple
+
+
 class Event:
     """
     A unique campus event.
@@ -38,9 +41,7 @@ class Event:
         #       If time permits, update this to catch possible invalid types or string formats
         if len(date) == 10 and len(time) == 5:
             # Date time of the form (year, month, day, hour, minute)
-            self.datetime = tuple(
-                int(d) for d in [date[:4], date[5:7], date[8:], time[:2], time[3:]]
-            )
+            self.datetime = create_datetime_tuple(date=self.date, time=self.time)
 
     # TODO add dunder eq, ne, and gt to be used for checking conflicts / overlaps
 
