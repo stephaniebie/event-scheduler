@@ -45,6 +45,11 @@ class Event:
             return NotImplemented
         return self.start_time > other.start_time
     
+    def __lt__(self, other):
+        if not isinstance(other, Event):
+            return NotImplemented
+        return self.start_time < other.start_time
+    
 
 class EventNode(Event):
     """

@@ -1,95 +1,58 @@
 # PART C: Searching & Conflict Detection
 # Implements linear and binary search as well as an algorithm for checking if two or more events overlap in time
-from enum import Enum, member
-from scheduler.event import Event, EventNode
-from scheduler.sort import sort_data
 
-
-def linear_search(data: list, target: int) -> Event | EventNode | None:
-    """
-    Iteratively searches through a list of events for an event matching the target ID.
-
-    Parameters
-    ----------
-    data: list
-        List of Event or EventNode objects
-    target: int
-        Unique event ID to search for
-
-    Returns
-    -------
-    The found Event or EventNode
-    """
-    for datum in data:
-        if datum.id == target:
-            return datum
+def linear_search_list(event_list: list, target_id: int):
+    for event in event_list:
+        if event.id == target_id:
+            return event
     return None
 
 
-def binary_search(data: list, target: int) -> Event | EventNode | None:
-    """
-    Searches through a list of events for an event matching the target ID using the classic binary search algorithm.
+def binary_search_list(event_list: list, target_id: int):
+    low = 0
+    high = len(event_list) - 1
 
-    Parameters
-    ----------
-    data: list
-        List of Event or EventNode objects
-    target: int
-        Unique event ID to search for
-
-    Returns
-    -------
-    The found Event or EventNode
-    """
-    # Ensure the data is sorted
-    data = sort_data(data)
-
-    # Classic binary search algorithm
-    left_index, right_index = 0, len(data) - 1
-    while left_index <= right_index:
-        middle_index = (left_index + right_index) // 2
-        datum = data[middle_index]
-        if datum.id == target:
-            return datum
-        elif datum.id < target:
-            left_index = middle_index + 1
+    while low <= high:
+        mid = (low + high)//2
+        if event_list[mid].id == target_id:
+            return event_list[mid]
+        elif event_list[mid].id < target_id:
+            low = mid + 1
         else:
-            right_index = middle_index - 1
+            high = mid - 1
     return None
 
 
-class SearchAlgorithm(Enum):
-    LINEAR = member(linear_search)
-    BINARY = member(binary_search)
+def linear_search_linked_list(event_node, target_id: int):
+    current = event_node
+    while current:
+        if current.id == target_id:
+            return current
+        current = current.next
+    return None
 
-
-def search_data(
-    data: list[Event | EventNode],
-    id: int,
-    algorithm: SearchAlgorithm = SearchAlgorithm.BINARY,
-) -> Event | EventNode | None:
+def binary_search_linked_list(event_node, target_id: int):
+    
     """
-    Searches for an event using a specific algorithm.
-
-    Parameters
-    ----------
-    data: list
-        List of events
-    id: int
-        A unique event ID to search for
-    algorithm: SearchAlgorithm
-        Enumeration value for a search algorithm
-
-    Returns
-    -------
-    Found event as either an Event object, an EventNode object, or a Nonetype if not found
+    We can't directly perform binary search on linked list. We will have to convert to list
     """
-    # Further enforces the algorithm enumeration
-    if algorithm not in list(SearchAlgorithm):
-        raise ValueError(f"{algorithm} is an invalid or undefined search algorithm.")
 
-    # Searches the data using the specified algorithm
-    return algorithm.value(data=data, target=id)
+    event_list = []
+    current = event_node
 
+    while current:
+        event_list.append(current)
+        current = current.next
+    
+    low = 0
+    high = len(event_list) - 1
 
-# TODO conflict implementation
+    while low <= high:
+        mid = (low + high)//2
+        if event_list[mid].id == target_id:
+            return event_list[mid]
+        elif event_list[mid] < target_id:
+            low = mid + 1
+        else:
+            high = mid - 1
+    return None
