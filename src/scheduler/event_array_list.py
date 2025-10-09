@@ -23,7 +23,7 @@ class EventList:
         new_event.id = self.id
         self.events.append(new_event)
         self.id += 1
-        print(f"Successfully created new event: '{new_event.title} with ID: '{new_event.id}'")
+        print(f"Successfully created new event: '{new_event.title}' with ID: '{new_event.id}'")
         return new_event
 
     #Below function deletes an event based on event ID and returns boolean
@@ -32,7 +32,7 @@ class EventList:
 
         for event in self.events:
             if event.id == event_id:
-                to_remove = event.id
+                to_remove = event
                 break
         
         if to_remove:

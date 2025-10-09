@@ -1,5 +1,5 @@
 from scheduler.event import Event, EventNode
-from scheduler.search import search_data, SearchAlgorithm
+from scheduler.search import search_data
 from scheduler.sort import sort_data, SortingAlgorithm
 
 class LinkedEventList:
@@ -30,7 +30,7 @@ class LinkedEventList:
             while last.next:
                 last = last.next
             last.next = new_event
-        print(f"Successfully created new event: '{new_event.title} with ID: '{new_event.id}'")
+        print(f"Successfully created new event: '{new_event.title}' with ID: '{new_event.id}'")
         return new_event
 
     #Below function deletes an event based on event ID and returns boolean
@@ -55,8 +55,9 @@ class LinkedEventList:
 
     def search_by_id(self, id: int, linear_search: bool):
 
-        """I dont think binary search can be performed on Linked list since we can't randomly access index directly
-        So we will probably have to convert it to a list and perform binary search.
+        """
+        This function will search and display event details based on event id entered by user.
+        Since the list and linked list is already in sorted order based on id, we can apply both linear and binary.
         """
 
         if linear_search:
