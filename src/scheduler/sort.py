@@ -139,8 +139,9 @@ def quick_sort(data: list | EventNode) -> list | EventNode:
         """
         pivot = data
         """
-        Most probably below defined empty nodes mosts probably will crash since we need valid 
-        inputs because of constructor. We might have to pass dummy values.
+        Most probably below defined empty nodes mosts probably will 
+        crash since we need valid inputs because of constructor. 
+        We might have to pass dummy values.
         """
         less_head = EventNode(None)
         less_tail = less_head
@@ -163,7 +164,8 @@ def quick_sort(data: list | EventNode) -> list | EventNode:
                 equal_tail.next = current
                 equal_tail = equal_tail.next
         """
-        Terminating the three new nodes by cutting of their tail (setting tail = None)
+        Terminating the three new nodes by cutting of their tail 
+        (setting tail = None)
         """
         less_tail.next, equal_tail.next, greater_tail.next = None, None, None
         """
