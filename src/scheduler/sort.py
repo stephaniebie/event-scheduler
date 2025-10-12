@@ -1,40 +1,65 @@
-# PART B: Sorting Events
-# Implementation of three sorting algorithms
-from enum import Enum
-from src.scheduler.event import EventNode
+# For use with type hints,,,
+from __future__ import annotations
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from scheduler.eventlist import EventList
+    from scheduler.linkedeventlist import LinkedEventList
+
+from enum import Enum, member
+from scheduler.event import EventNode
+from scheduler.utils import parse_object
 
 
-def insertion_sort(data: list | EventNode) -> list | EventNode:
+def insertion_sort(
+    data: list | EventNode, attribute: str | None = None
+) -> list | EventNode:
     """
-    Copying list to another list so we don't alter original
-    list which is already sorted by event id.
+    Sorts data using the insertion sorting algorithm.
+
+    Parameters
+    ----------
+    data: list | EventNode
+        The data to be sorted
+    attribute: str | None
+        The name of the attribute to parse in each item of the iterable to be used for sorting
+        If None, matches each item
+
+    Returns
+    -------
+    Sorted list or linked list node
     """
-    if type(data) is list:
-        temp_list = list(data)
-        for i in range(1, len(temp_list)):
-            key_event = temp_list[i]
+    # Insertion sort algorithm for lists
+    if isinstance(data, list):
+        for i in range(1, len(data)):
+            key = data[i]
             j = i - 1
-
-            while j >= 0 and key_event < temp_list[j]:
-                temp_list[j + 1] = temp_list[j]
+            while j >= 0 and parse_object(key, attribute) < parse_object(
+                data[j], attribute
+            ):
+                data[j + 1] = data[j]
                 j -= 1
-            temp_list[j + 1] = key_event
-        return temp_list
+            data[j + 1] = key
+        return data
 
-    elif type(data) is EventNode:
+    # Insertion sort algorithm for linked lists
+    elif isinstance(data, EventNode):
         if not data or not data.next:
             return data
-
         temp_node = None
         current = data
         while current:
             next_node = current.next
-            if not temp_node or current <= temp_node:
+            if not temp_node or parse_object(current, attribute) <= parse_object(
+                temp_node, attribute
+            ):
                 current.next = temp_node
                 temp_node = current
             else:
                 temp_current = temp_node
-                while temp_current.next and temp_current.next < current:
+                while temp_current.next and parse_object(
+                    temp_current.next, attribute
+                ) < parse_object(current, attribute):
                     temp_current = temp_current.next
                 current.next = temp_current.next
                 temp_current.next = current
@@ -45,34 +70,61 @@ def insertion_sort(data: list | EventNode) -> list | EventNode:
         raise TypeError("Invalid datatype!!!")
 
 
-def merge_sort(data: list | EventNode) -> list | EventNode:
-    if type(data) is list:
-        if len(data) <= 1:
+def merge_sort(
+    data: list | EventNode, attribute: str | None = None
+) -> list | EventNode:
+    """
+    Sorts data using the merge sorting algorithm.
+
+    Parameters
+    ----------
+    data: list | EventNode
+        The data to be sorted
+    attribute: str | None
+        The name of the attribute to parse in each item of the iterable to be used for sorting
+        If None, matches each item
+
+    Returns
+    -------
+    Sorted list or linked list node
+    """
+    if isinstance(data, list):
+        if len(data) > 1:
+            # Recursively divide the data into smaller parts
+            middle_index = len(data) // 2
+            left_data = data[:middle_index]
+            right_data = data[middle_index:]
+
+            merge_sort(left_data)
+            merge_sort(right_data)
+
+            i = j = k = 0
+
+            # Merge the halves
+            while i < len(left_data) and j < len(right_data):
+                if parse_object(left_data[i], attribute) < parse_object(
+                    right_data[j], attribute
+                ):
+                    data[k] = left_data[i]
+                    i += 1
+                else:
+                    data[k] = right_data[j]
+                    j += 1
+                k += 1
+
+            # Add in the remaining elements that weren't merged in
+            while i < len(left_data):
+                data[k] = left_data[i]
+                i += 1
+                k += 1
+            while j < len(right_data):
+                data[k] = right_data[j]
+                j += 1
+                k += 1
+
             return data
 
-        mid = len(data) // 2
-        left_half = merge_sort(data[:mid])
-        right_half = merge_sort(data[mid:])
-
-        temp_list = []
-        i, j = 0, 0
-
-        while i < len(left_half) and j < len(right_half):
-            if left_half[i] <= right_half[j]:
-                temp_list.append(left_half[i])
-                i += 1
-            else:
-                temp_list.append(right_half[j])
-                j += 1
-        """
-        Need to discuss if we can use below extend() function 
-        to append remaining items in list
-        """
-        temp_list.extend(left_half[i:])
-        temp_list.extend(right_half[j:])
-        return temp_list
-
-    elif type(data) is EventNode:
+    elif isinstance(data, EventNode):
         """Function for merging two halves"""
 
         def merge(left_node, right_node):
@@ -84,7 +136,9 @@ def merge_sort(data: list | EventNode) -> list | EventNode:
             temp = EventNode(None)  # Will probably fail on execution
             tail = temp
             while left_node and right_node:
-                if left_node <= right_node:
+                if parse_object(left_node, attribute) <= parse_object(
+                    right_node, attribute
+                ):
                     tail.next = left_node
                     left_node = left_node.next
                 else:
@@ -111,27 +165,52 @@ def merge_sort(data: list | EventNode) -> list | EventNode:
         raise TypeError("Invalid datatype!!!")
 
 
-def quick_sort(data: list | EventNode) -> list | EventNode:
-    if type(data) is list:
+def quick_sort(
+    data: list | EventNode, attribute: str | None = None
+) -> list | EventNode:
+    """
+    Sorts data using the quick sorting algorithm. Chooses the first item in the list as a pivot.
+
+    Parameters
+    ----------
+    data: list | EventNode
+        The data to be sorted
+    attribute: str | None
+        The name of the attribute to parse in each item of the iterable to be used for sorting
+        If None, matches each item
+
+    Returns
+    -------
+    Sorted list or linked list node
+    """
+    if isinstance(data, list):
+        # Base case
         if len(data) <= 1:
             return data
-        """ 
-        Taking first element as pivot.
-        """
-        pivot = data[0]
-        less_than = []
-        equal_to = []
-        greater_than = []
-        for event in data:
-            if event < pivot:
-                less_than.append(event)
-            elif event > pivot:
-                greater_than.append(event)
-            else:
-                equal_to.append(event)
-        return quick_sort(less_than) + equal_to + quick_sort(greater_than)
 
-    elif type(data) is EventNode:
+        # Choose a pivot
+        pivot = data[0]
+
+        # Split data into three sections (left, pivot, right)
+        left_data = [
+            d
+            for d in data
+            if parse_object(d, attribute) < parse_object(pivot, attribute)
+        ]
+        middle_data = [
+            d
+            for d in data
+            if parse_object(d, attribute) == parse_object(pivot, attribute)
+        ]
+        right_data = [
+            d
+            for d in data
+            if parse_object(d, attribute) > parse_object(pivot, attribute)
+        ]
+
+        return quick_sort(left_data) + middle_data + quick_sort(right_data)
+
+    elif isinstance(data, EventNode):
         if not data or not data.next:
             return data
         """
@@ -154,10 +233,10 @@ def quick_sort(data: list | EventNode) -> list | EventNode:
         """
         current = data
         while current:
-            if current < pivot:
+            if parse_object(current, attribute) < parse_object(pivot, attribute):
                 less_tail.next = current
                 less_tail = less_tail.next
-            elif current > pivot:
+            elif parse_object(current, attribute) > parse_object(pivot, attribute):
                 greater_tail.next = current
                 greater_tail = greater_tail.next
             else:
@@ -193,10 +272,39 @@ def quick_sort(data: list | EventNode) -> list | EventNode:
 
 
 class SortingAlgorithm(Enum):
-    INSERTION = insertion_sort
-    MERGE = merge_sort
-    QUICK = quick_sort
+    """
+    Enumeration of different sorting algorithms
+    """
+
+    INSERTION = member(insertion_sort)
+    MERGE = member(merge_sort)
+    QUICK = member(quick_sort)
 
 
-def sort_data(data, algorithm: SortingAlgorithm):
-    return algorithm.value(data)
+def sort_data(
+    data: EventList | LinkedEventList,
+    algorithm: SortingAlgorithm = SortingAlgorithm.QUICK,
+    attribute: str | None = "start_time",
+) -> EventList | LinkedEventList:
+    """
+    Sorts an event list by date and time using a specific algorithm.
+
+    Parameters
+    ----------
+    data: EventList | LinkedEventList
+        An event list object
+    algorithm: SortingAlgorithm
+        Enumeration value for a sorting algorithm
+    attribute: str | None
+        The name of the attribute to parse in each item of the iterable to be used for sorting
+
+    Returns
+    -------
+    Sorted data as a list
+    """
+    # Further enforces the algorithm enumeration
+    if algorithm not in list(SortingAlgorithm):
+        raise ValueError(f"{algorithm} is an invalid or undefined sorting algorithm.")
+
+    # Sorts the data using the specified algorithm
+    return algorithm.value(data=data, attribute=attribute)

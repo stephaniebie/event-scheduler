@@ -1,99 +1,118 @@
-# PART C: Searching & Conflict Detection
-# Implements linear and binary search as well as an algorithm for checking if two or more events overlap in time
+# For use with type hints,,,
+from __future__ import annotations
+from typing import TYPE_CHECKING
 
-from enum import Enum
-from src.scheduler.event import EventNode
+if TYPE_CHECKING:
+    from scheduler.eventlist import EventList
+    from scheduler.linkedeventlist import LinkedEventList
 
-
-def linear_search(data: list | EventNode, target_id: int):
-    if type(data) is list:
-        for event in data:
-            if event.id == target_id:
-                return event
-        return None
-
-    elif type(data) is EventNode or data is None:
-        current = data
-        while current:
-            if current.id == target_id:
-                return current
-            current = current.next
-        return None
-
-    else:
-        raise TypeError("Invalid datatype!!!")
+from enum import Enum, member
+from scheduler.sort import sort_data
+from scheduler.utils import parse_object
+from scheduler.event import Event, EventNode
 
 
-def binary_search(data: list | EventNode, target_id: int):
-    if type(data) is list:
-        low = 0
-        high = len(data) - 1
-        while low <= high:
-            mid = (low + high) // 2
-            if data[mid].id == target_id:
-                return data[mid]
-            elif data[mid].id < target_id:
-                low = mid + 1
-            else:
-                high = mid - 1
-        return None
+def linear_search(data, target, attribute: str | None = None):
+    """
+    Iteratively searches through an iterable for an item matching the target.
 
-    elif type(data) is EventNode or data is None:
-        length = 0
-        current = data
-        """
-        Traversing through linked list to get length
-        """
-        while current:
-            length += 1
-            current = current.next
-        """
-        If linked list is empty, returns None
-        """
-        if length == 0:
-            return None
-        """
-        Performing Binary Search
-        """
-        low, high = 0, length - 1
-        while low <= high:
-            mid = (low + high) // 2
-            mid_node = data
-            """
-            Since we can't directly access index in linked list,
-            we are traversing from head till middle node
-            """
-            for _ in range(mid):
-                mid_node = mid_node.next
-            if mid_node.id == target_id:
-                return mid_node
-            elif mid_node.id < target_id:
-                low = mid + 1
-            else:
-                high = mid - 1
+    Parameters
+    ----------
+    data
+        An iterable object
+    target
+        Any item to match with an item of data
+    attribute: str | None
+        The name of the attribute to parse in each item of the iterable to be matched with the target
+        If None, matches each item
 
-    else:
-        raise TypeError("Invalid datatype!!!")
+    Returns
+    -------
+    The found item or None if not found
+    """
+    # Iterate through the iterable
+    for datum in data:
+        # Match to target
+        if parse_object(datum, attribute) == target:
+            return datum
+    return None
+
+
+def binary_search(data, target, attribute: str | None = None):
+    """
+    Searches through an iterable for an item matching the target using the classic binary search algorithm.
+
+    Parameters
+    ----------
+    data
+        An iterable object
+    target
+        Any item to match with an item of data
+    attribute: str | None
+        The name of the attribute to parse in each item of the iterable to be matched with the target
+        If None, matches each item
+
+    Returns
+    -------
+    The found item or None if not found
+    """
+    # Ensure the data is sorted
+    data = sort_data(data)
+
+    # Initialize min and max indices
+    low = 0
+    high = len(data) - 1
+    while low <= high:
+        # Get middle index
+        mid = (low + high) // 2
+        # Get item from iterable
+        datum = data[mid]
+        if attribute is not None:
+            datum = vars(datum).get(attribute, None)
+        # If target is found, return the item
+        if datum == target:
+            return datum
+        # Keep splitting the list
+        elif datum < target:
+            low = mid + 1
+        else:
+            high = mid - 1
+    return None
 
 
 class SearchAlgorithm(Enum):
-    LINEAR = linear_search
-    BINARY = binary_search
+    LINEAR = member(linear_search)
+    BINARY = member(binary_search)
 
 
-def search_data(data, target_id: int, algorithm: SearchAlgorithm):
-    if algorithm == SearchAlgorithm.LINEAR:
-        return linear_search(data, target_id)
-
-    elif algorithm == SearchAlgorithm.BINARY:
-        return binary_search(data, target_id)
-
-    """ 
-    We can use following method
-
-    return algorithm.value(data, target_id)
-
-    This will automatically call the search function depending
-    on the value stored in algorithm.
-
+def search_data(
+    data: EventList | LinkedEventList,
+    target,
+    algorithm: SearchAlgorithm = SearchAlgorithm.BINARY,
+    attribute: str | None = "id",
+) -> Event | EventNode | None:
     """
+    Searches for an event using a specific algorithm.
+
+    Parameters
+    ----------
+    data: EventList | LinkedEventList
+        List of events
+    target
+        Any item to match with an item of data
+    algorithm: SearchAlgorithm
+        Enumeration value for a search algorithm
+    attribute: str | None
+        The name of the attribute to parse in each item of the iterable to be matched with the target
+        If None, matches each item
+
+    Returns
+    -------
+    Found event as either an Event object, an EventNode object, or None if not found
+    """
+    # Further enforces the algorithm enumeration
+    if algorithm not in list(SearchAlgorithm):
+        raise ValueError(f"{algorithm} is an invalid or undefined search algorithm.")
+
+    # Searches the data using the specified algorithm
+    return algorithm.value(data=data, target=target, attribute=attribute)
