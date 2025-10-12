@@ -55,6 +55,8 @@ def test_event():
         time="23:59",
         location="Education Building, Miramontes Baca 157",
     )
+    assert event != another_event
+    another_event.id = 1234
     assert event == another_event
 
 
@@ -111,6 +113,8 @@ def test_eventnode():
         time="23:59",
         location="Education Building, Miramontes Baca 157",
     )
+    assert event != another_event
+    another_event.id = 1234
     assert event == another_event
 
     # Copy

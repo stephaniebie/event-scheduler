@@ -76,7 +76,7 @@ class Event:
             raise TypeError(
                 f"Cannot establish equality between Event and {type(other)}"
             )
-        checked_attributes = ["title", "date", "time", "location", "id"]
+        checked_attributes = ["title", "date", "time", "location", "id", "_id"]
         filter_attributes = lambda obj: {
             k: v for k, v in vars(obj).items() if k in checked_attributes
         }
