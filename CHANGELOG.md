@@ -11,7 +11,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Add getitem indexing and slicing support for `EventList` and `LinkedEventList`
 - Add utils for storing general helper functions
 - Add setitem support for `EventList` and `LinkedEventList`
-- Add copy method to `EventNode` to avoid node conflicts
+- Add copy method to `EventNode` to avoid node conflicts'
+- Add unit testing
 
 ### Changed
 - Major refactoring to consolidate various changes from Dnyanada's search algorithm implementation, Augustine's class definitions, and Stephanie's prototype tool
