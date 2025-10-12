@@ -26,7 +26,6 @@ class LinkedEventList:
         self.head = None
 
     def __iter__(self):
-        # return LinkedListIter(self.head)
         node = self.head
         while node:
             yield node
@@ -210,26 +209,3 @@ class LinkedEventList:
             eventlist.append(node)
             node = node.next
         return eventlist
-
-
-class LinkedListIter:
-    """
-    Turns LinkedEventList into an iterator.
-    """
-
-    def __init__(self, node: EventNode):
-        self.node = node
-
-    def __next__(self):
-        """
-        Next node in iterator.
-
-        Returns
-        -------
-        Next EventNode in list
-        """
-        if self.node is None:
-            raise StopIteration
-        node = self.node
-        self.node = self.node.next
-        return node
