@@ -7,19 +7,16 @@ if TYPE_CHECKING:
     from scheduler.linkedeventlist import LinkedEventList
 
 from enum import Enum, member
-from scheduler.event import EventNode
 from scheduler.utils import parse_object
 
 
-def insertion_sort(
-    data: list | EventNode, attribute: str | None = None
-) -> list | EventNode:
+def insertion_sort(data, attribute: str | None = None):
     """
     Sorts data using the insertion sorting algorithm.
 
     Parameters
     ----------
-    data: list | EventNode
+    data
         The data to be sorted
     attribute: str | None
         The name of the attribute to parse in each item of the iterable to be used for sorting
@@ -27,58 +24,27 @@ def insertion_sort(
 
     Returns
     -------
-    Sorted list or linked list node
+    Sorted data
     """
-    # Insertion sort algorithm for lists
-    if isinstance(data, list):
-        for i in range(1, len(data)):
-            key = data[i]
-            j = i - 1
-            while j >= 0 and parse_object(key, attribute) < parse_object(
-                data[j], attribute
-            ):
-                data[j + 1] = data[j]
-                j -= 1
-            data[j + 1] = key
-        return data
-
-    # Insertion sort algorithm for linked lists
-    elif isinstance(data, EventNode):
-        if not data or not data.next:
-            return data
-        temp_node = None
-        current = data
-        while current:
-            next_node = current.next
-            if not temp_node or parse_object(current, attribute) <= parse_object(
-                temp_node, attribute
-            ):
-                current.next = temp_node
-                temp_node = current
-            else:
-                temp_current = temp_node
-                while temp_current.next and parse_object(
-                    temp_current.next, attribute
-                ) < parse_object(current, attribute):
-                    temp_current = temp_current.next
-                current.next = temp_current.next
-                temp_current.next = current
-            current = next_node
-        return temp_node
-
-    else:
-        raise TypeError("Invalid datatype!!!")
+    for i in range(1, len(data)):
+        key = data[i].copy() if hasattr(data[i], "copy") else data[i]
+        j = i - 1
+        while j >= 0 and parse_object(key, attribute) < parse_object(
+            data[j], attribute
+        ):
+            data[j + 1] = data[j]
+            j -= 1
+        data[j + 1] = key
+    return data
 
 
-def merge_sort(
-    data: list | EventNode, attribute: str | None = None
-) -> list | EventNode:
+def merge_sort(data, attribute: str | None = None):
     """
     Sorts data using the merge sorting algorithm.
 
     Parameters
     ----------
-    data: list | EventNode
+    data
         The data to be sorted
     attribute: str | None
         The name of the attribute to parse in each item of the iterable to be used for sorting
@@ -86,94 +52,57 @@ def merge_sort(
 
     Returns
     -------
-    Sorted list or linked list node
+    Sorted data
     """
-    if isinstance(data, list):
-        if len(data) > 1:
-            # Recursively divide the data into smaller parts
-            middle_index = len(data) // 2
-            left_data = data[:middle_index]
-            right_data = data[middle_index:]
+    if len(data) > 1:
+        # Recursively divide the data into smaller parts
+        middle_index = len(data) // 2
+        left_data = [
+            data[i].copy() if hasattr(data[i], "copy") else data[i]
+            for i in range(middle_index)
+        ]
+        right_data = [
+            data[i].copy() if hasattr(data[i], "copy") else data[i]
+            for i in range(middle_index, len(data))
+        ]
 
-            merge_sort(left_data)
-            merge_sort(right_data)
+        merge_sort(data=left_data, attribute=attribute)
+        merge_sort(data=right_data, attribute=attribute)
 
-            i = j = k = 0
+        i = j = k = 0
 
-            # Merge the halves
-            while i < len(left_data) and j < len(right_data):
-                if parse_object(left_data[i], attribute) < parse_object(
-                    right_data[j], attribute
-                ):
-                    data[k] = left_data[i]
-                    i += 1
-                else:
-                    data[k] = right_data[j]
-                    j += 1
-                k += 1
-
-            # Add in the remaining elements that weren't merged in
-            while i < len(left_data):
+        # Merge the halves
+        while i < len(left_data) and j < len(right_data):
+            if parse_object(left_data[i], attribute) < parse_object(
+                right_data[j], attribute
+            ):
                 data[k] = left_data[i]
                 i += 1
-                k += 1
-            while j < len(right_data):
+            else:
                 data[k] = right_data[j]
                 j += 1
-                k += 1
+            k += 1
 
-            return data
+        # Add in the remaining elements that weren't merged in
+        while i < len(left_data):
+            data[k] = left_data[i]
+            i += 1
+            k += 1
+        while j < len(right_data):
+            data[k] = right_data[j]
+            j += 1
+            k += 1
 
-    elif isinstance(data, EventNode):
-        """Function for merging two halves"""
-
-        def merge(left_node, right_node):
-            """
-            Need a dummy node but None will probably fail because our
-            EventNode constructor needs valid input.
-            Need to explore other options - Looks like we need to pass dummy values
-            """
-            temp = EventNode(None)  # Will probably fail on execution
-            tail = temp
-            while left_node and right_node:
-                if parse_object(left_node, attribute) <= parse_object(
-                    right_node, attribute
-                ):
-                    tail.next = left_node
-                    left_node = left_node.next
-                else:
-                    tail.next = right_node
-                    right_node = right_node.next
-                tail = tail.next
-            tail.next = left_node or right_node
-            return temp.next
-
-        if not data or not data.next:
-            return data
-        slow, fast = data, data.next
-        while fast and fast.next:
-            slow = slow.next
-            fast = fast.next.next
-        right_nodes = slow.next
-        slow.next = None
-        left_nodes = data
-        left_half = merge_sort(left_nodes)
-        right_half = merge_sort(right_nodes)
-        return merge(left_half, right_half)
-
-    else:
-        raise TypeError("Invalid datatype!!!")
+        return data
 
 
-def quick_sort(
-    data: list | EventNode, attribute: str | None = None
-) -> list | EventNode:
+def quick_sort(data, attribute: str | None = None):
     """
     Sorts data using the quick sorting algorithm. Chooses the first item in the list as a pivot.
 
     Parameters
     ----------
-    data: list | EventNode
+    data
         The data to be sorted
     attribute: str | None
         The name of the attribute to parse in each item of the iterable to be used for sorting
@@ -181,94 +110,35 @@ def quick_sort(
 
     Returns
     -------
-    Sorted list or linked list node
+    Sorted data
     """
-    if isinstance(data, list):
-        # Base case
-        if len(data) <= 1:
-            return data
 
+    def _partition(low, high):
+        """
+        Get partition index.
+        """
         # Choose a pivot
-        pivot = data[0]
+        # NOTE: We are choosing a naive pivot strategy here to balance out the performance of sorting in a linked list
+        pivot = data[low].copy() if hasattr(data[low], "copy") else data[low]
+        i = low + 1
+        for j in range(low + 1, high + 1):
+            if parse_object(data[j], attribute) < parse_object(pivot, attribute):
+                data[i], data[j] = data[j], data[i]
+                i += 1
+        data[low], data[i - 1] = data[i - 1], data[low]
+        return i - 1
 
-        # Split data into three sections (left, pivot, right)
-        left_data = [
-            d
-            for d in data
-            if parse_object(d, attribute) < parse_object(pivot, attribute)
-        ]
-        middle_data = [
-            d
-            for d in data
-            if parse_object(d, attribute) == parse_object(pivot, attribute)
-        ]
-        right_data = [
-            d
-            for d in data
-            if parse_object(d, attribute) > parse_object(pivot, attribute)
-        ]
+    def _sort(low, high):
+        """
+        Base sorting.
+        """
+        if low < high:
+            partition_index = _partition(low, high)
+            _sort(low, partition_index - 1)
+            _sort(partition_index + 1, high)
 
-        return quick_sort(left_data) + middle_data + quick_sort(right_data)
-
-    elif isinstance(data, EventNode):
-        if not data or not data.next:
-            return data
-        """
-        Taking first element as pivot.
-        """
-        pivot = data
-        """
-        Most probably below defined empty nodes mosts probably will 
-        crash since we need valid inputs because of constructor. 
-        We might have to pass dummy values.
-        """
-        less_head = EventNode(None)
-        less_tail = less_head
-        equal_head = EventNode(None)
-        equal_tail = equal_head
-        greater_head = EventNode(None)
-        greater_tail = greater_head
-        """
-        Traverse through list and segregate nodes based on value of pivot
-        """
-        current = data
-        while current:
-            if parse_object(current, attribute) < parse_object(pivot, attribute):
-                less_tail.next = current
-                less_tail = less_tail.next
-            elif parse_object(current, attribute) > parse_object(pivot, attribute):
-                greater_tail.next = current
-                greater_tail = greater_tail.next
-            else:
-                equal_tail.next = current
-                equal_tail = equal_tail.next
-        """
-        Terminating the three new nodes by cutting of their tail 
-        (setting tail = None)
-        """
-        less_tail.next, equal_tail.next, greater_tail.next = None, None, None
-        """
-        Recursively sort the nodes further.
-        Equal_to is considered as already sorted
-        """
-        sorted_less = quick_sort(less_head.next)
-        sorted_greater = quick_sort(greater_head.next)
-        """
-        Merging sorted nodes together
-        """
-        if not sorted_less:
-            equal_tail.next = sorted_greater
-            return equal_head.next
-        else:
-            tail_of_less = sorted_less
-            while tail_of_less:
-                tail_of_less = tail_of_less.next
-            tail_of_less.next = equal_head.next
-            equal_tail.next = sorted_greater
-            return sorted_less
-
-    else:
-        raise TypeError("Invalid datatype!!!")
+    _sort(low=0, high=len(data) - 1)
+    return data
 
 
 class SortingAlgorithm(Enum):

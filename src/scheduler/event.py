@@ -47,37 +47,26 @@ class Event:
         except ValueError:
             raise ValueError(f"Invalid date '{date}' or time '{time}'")
 
-        @property
-        def id(self):
-            """
-            A unique event ID.
-            """
-            return self._id
-
-        @id.setter
-        def id(self, value: int):
-            """
-            Set the unique event ID value.
-
-            Parameters
-            ----------
-            value: int
-                Value to set as the event ID
-            """
-            if isinstance(value, bool) or not isinstance(value, int):
-                raise TypeError(f"Cannot set ID to type {type(value)}")
-            self._id = value
-
-    def collides_with(self, other: Event):
+    @property
+    def id(self):
         """
-        Checks if two events overlap in time.
+        A unique event ID.
+        """
+        return self._id
+
+    @id.setter
+    def id(self, value: int):
+        """
+        Set the unique event ID value.
 
         Parameters
         ----------
-        other: Event
-            Another Event object
+        value: int
+            Value to set as the event ID
         """
-        return self.start_time < other.end_time and other.start_time < self.end_time
+        if isinstance(value, bool) or not isinstance(value, int):
+            raise TypeError(f"Cannot set ID to type {type(value)}")
+        self._id = value
 
     def __eq__(self, other: Event):
         """
@@ -92,6 +81,17 @@ class Event:
             k: v for k, v in vars(obj).items() if k in checked_attributes
         }
         return filter_attributes(self) == filter_attributes(other)
+
+    def collides_with(self, other: Event):
+        """
+        Checks if two events overlap in time.
+
+        Parameters
+        ----------
+        other: Event
+            Another Event object
+        """
+        return self.start_time < other.end_time and other.start_time < self.end_time
 
 
 class EventNode(Event):
@@ -131,3 +131,15 @@ class EventNode(Event):
             location=location,
         )
         self.next = next
+
+    def copy(self):
+        node = EventNode(
+            title=self.title,
+            date=self.date,
+            time=self.time,
+            location=self.location,
+        )
+        for k, v in vars(self).items():
+            if k not in ["next"]:
+                setattr(node, k, v)
+        return node

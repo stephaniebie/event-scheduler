@@ -26,20 +26,42 @@ class LinkedEventList:
         self.head = None
 
     def __iter__(self):
-        return LinkedListIter(self.head)
+        # return LinkedListIter(self.head)
+        node = self.head
+        while node:
+            yield node
+            node = node.next
 
-    def __getitem__(self, index: int | slice) -> EventNode | list:
+    def __getitem__(self, index: int) -> EventNode:
         if isinstance(index, int):
-            for i, node in enumerate(self):
-                if i == index:
-                    return node
-        elif isinstance(index, slice):
-            start, end, step = index.indices(self.size)
-            return [
-                node
-                for i, node in enumerate(self)
-                if i in list(range(start, end, step))
-            ]
+            # Validate index
+            if index < 0:
+                index = self.size + index
+            if index < 0 or index >= self.size:
+                raise IndexError(f"Index {index} is out of range")
+            # Get node
+            node = self.head
+            for _ in range(index):
+                node = node.next
+            return node.copy()
+        else:
+            raise TypeError(f"Invalid index type {type(index)}")
+
+    def __setitem__(self, index: int, value: EventNode):
+        # TODO: Maybe some conflict detection here?
+        if isinstance(index, int):
+            # Validate index
+            if index < 0:
+                index = self.size + index
+            if index < 0 or index >= self.size:
+                raise IndexError(f"Index {index} is out of range")
+            # Set node
+            node = self.head
+            for _ in range(index):
+                node = node.next
+            for k, v in vars(value).items():
+                if k not in ["next"]:
+                    setattr(node, k, v)
         else:
             raise TypeError(f"Invalid index type {type(index)}")
 
@@ -180,7 +202,7 @@ class LinkedEventList:
         if sort is True:
             sort = SortingAlgorithm.QUICK
         if sort:
-            node = sort_data(data=self.head, algorithm=sort)
+            node = sort_data(data=self, algorithm=sort).head
         else:
             node = self.head
         # Construct list

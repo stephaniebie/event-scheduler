@@ -37,6 +37,13 @@ class EventList:
             return self.list_all(sort=False)[index]
         raise TypeError(f"Invalid index type {type(index)}")
 
+    def __setitem__(self, index: int | slice, value: Event | list):
+        # TODO: Maybe some conflict detection here?
+        if isinstance(index, (int, slice)):
+            self.events[index] = value
+        else:
+            raise TypeError(f"Invalid index type {type(index)}")
+
     def __len__(self):
         return self.size
 
@@ -186,5 +193,5 @@ class EventList:
         if sort is True:
             sort = SortingAlgorithm.QUICK
         if sort:
-            eventlist = sort_data(data=eventlist, algorithm=sort)
+            eventlist = sort_data(data=self, algorithm=sort).events[: self.size]
         return eventlist

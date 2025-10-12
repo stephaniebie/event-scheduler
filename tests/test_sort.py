@@ -13,7 +13,6 @@ from scheduler.event import Event
 # Test parameters
 sorted_list = [
     Event(
-        id=i,
         title="",
         date=f"2025-10-{str(1 + i).zfill(2)}",
         time="01:30",

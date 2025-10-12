@@ -12,7 +12,6 @@ from scheduler.event import Event
 # Test parameters
 sorted_list = [
     Event(
-        id=i,
         title="",
         date=f"2025-10-{str(1 + i).zfill(2)}",
         time="01:30",
@@ -29,7 +28,6 @@ unsorted_list = sample(sorted_list, k=len(sorted_list))
         (
             10,
             Event(
-                id=10,
                 title="",
                 date="2025-10-11",
                 time="01:30",
@@ -39,7 +37,6 @@ unsorted_list = sample(sorted_list, k=len(sorted_list))
         (
             0,
             Event(
-                id=0,
                 title="",
                 date="2025-10-01",
                 time="01:30",
@@ -87,7 +84,6 @@ def test_searchalgorithm():
 def test_search_data():
     target_id = 10
     expected_target = Event(
-        id=10,
         title="",
         date="2025-10-11",
         time="01:30",
@@ -96,17 +92,21 @@ def test_search_data():
 
     # Linear search
     assert vars(
-        search_data(data=unsorted_list, id=target_id, algorithm=SearchAlgorithm.LINEAR)
+        search_data(
+            data=unsorted_list, target=target_id, algorithm=SearchAlgorithm.LINEAR
+        )
     ) == vars(expected_target)
 
     # Binary search
     assert vars(
-        search_data(data=unsorted_list, id=target_id, algorithm=SearchAlgorithm.BINARY)
+        search_data(
+            data=unsorted_list, target=target_id, algorithm=SearchAlgorithm.BINARY
+        )
     ) == vars(expected_target)
 
     # Catch value errors
     with pytest.raises(ValueError) as exception:
-        search_data(data=unsorted_list, id=target_id, algorithm="INVALID ALGORITHM")
+        search_data(data=unsorted_list, target=target_id, algorithm="INVALID ALGORITHM")
     assert "INVALID ALGORITHM is an invalid or undefined search algorithm." == str(
         exception.value
     )

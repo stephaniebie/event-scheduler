@@ -57,7 +57,7 @@ def binary_search(data, target, attribute: str | None = None):
     The found item or None if not found
     """
     # Ensure the data is sorted
-    data = sort_data(data)
+    data = sort_data(data=data, attribute=attribute)
 
     # Initialize min and max indices
     low = 0
@@ -67,13 +67,11 @@ def binary_search(data, target, attribute: str | None = None):
         mid = (low + high) // 2
         # Get item from iterable
         datum = data[mid]
-        if attribute is not None:
-            datum = vars(datum).get(attribute, None)
         # If target is found, return the item
-        if datum == target:
+        if parse_object(datum, attribute) == target:
             return datum
         # Keep splitting the list
-        elif datum < target:
+        elif parse_object(datum, attribute) < target:
             low = mid + 1
         else:
             high = mid - 1
@@ -89,7 +87,7 @@ def search_data(
     data: EventList | LinkedEventList,
     target,
     algorithm: SearchAlgorithm = SearchAlgorithm.BINARY,
-    attribute: str | None = "id",
+    attribute: str | None = "_id",
 ) -> Event | EventNode | None:
     """
     Searches for an event using a specific algorithm.
