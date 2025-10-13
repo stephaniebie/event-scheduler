@@ -4,7 +4,7 @@ from scheduler.event import Event
 from datetime import datetime, timedelta
 from scheduler.eventlist import EventList
 from scheduler.search import SearchAlgorithm
-from scheduler.defaults import INITIAL_CAPACITY, INITIAL_ID
+from scheduler.defaults import INITIAL_CAPACITY
 
 
 # Initialize event list
@@ -69,6 +69,11 @@ def test_insert():
     expected_ids = sorted([i + 1 for i in indices]) + [None] * 6
     actual_ids = [event.id if event else event for event in event_list.events]
     assert actual_ids == expected_ids
+
+    # Catch invalid types
+    with pytest.raises(TypeError) as exception:
+        event_list.insert("invalid event")
+    assert f"Cannot insert event of type {str}" == str(exception.value)
 
     # Catch conflicts
     with pytest.raises(ValueError) as exception:
