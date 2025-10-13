@@ -11,28 +11,29 @@ from scheduler.event import Event
 
 
 # Test parameters
-sorted_list = [
-    Event(
+sorted_list = []
+for i in range(25):
+    event = Event(
         title="",
         date=f"2025-10-{str(1 + i).zfill(2)}",
         time="01:30",
         location="",
     )
-    for i in range(25)
-]
+    event.id = i
+    sorted_list.append(event)
 unsorted_list = sample(sorted_list, k=len(sorted_list))
 
 
 def test_insertion_sort():
-    assert insertion_sort(unsorted_list) == sorted_list
+    assert insertion_sort(data=unsorted_list, attribute="_id") == sorted_list
 
 
 def test_merge_sort():
-    assert merge_sort(unsorted_list) == sorted_list
+    assert merge_sort(data=unsorted_list, attribute="_id") == sorted_list
 
 
 def test_quick_sort():
-    assert quick_sort(unsorted_list) == sorted_list
+    assert quick_sort(data=unsorted_list, attribute="_id") == sorted_list
 
 
 def test_sortingalgorithm():

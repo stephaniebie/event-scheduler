@@ -3,22 +3,23 @@ from random import sample
 from scheduler.search import (
     binary_search,
     linear_search,
-    SearchAlgorithm,
     search_data,
+    SearchAlgorithm,
 )
 from scheduler.event import Event
 
 
 # Test parameters
-sorted_list = [
-    Event(
+sorted_list = []
+for i in range(25):
+    event = Event(
         title="",
         date=f"2025-10-{str(1 + i).zfill(2)}",
         time="01:30",
         location="",
     )
-    for i in range(25)
-]
+    event.id = i
+    sorted_list.append(event)
 unsorted_list = sample(sorted_list, k=len(sorted_list))
 
 
@@ -47,28 +48,36 @@ unsorted_list = sample(sorted_list, k=len(sorted_list))
     ],
 )
 def test_search(target, expected_target):
+    # Set ID
+    if expected_target:
+        expected_target.id = target
+
     # Linear search
     if expected_target is None:
-        assert linear_search(data=unsorted_list, target=target) is None
-        assert linear_search(data=sorted_list, target=target) is None
+        assert linear_search(data=unsorted_list, target=target, attribute="_id") is None
+        assert linear_search(data=sorted_list, target=target, attribute="_id") is None
     else:
-        assert vars(linear_search(data=unsorted_list, target=target)) == vars(
-            expected_target
+        assert (
+            linear_search(data=unsorted_list, target=target, attribute="_id")
+            == expected_target
         )
-        assert vars(linear_search(data=sorted_list, target=target)) == vars(
-            expected_target
+        assert (
+            linear_search(data=sorted_list, target=target, attribute="_id")
+            == expected_target
         )
 
     # Binary search
     if expected_target is None:
-        assert binary_search(data=unsorted_list, target=target) is None
-        assert binary_search(data=sorted_list, target=target) is None
+        assert binary_search(data=unsorted_list, target=target, attribute="_id") is None
+        assert binary_search(data=sorted_list, target=target, attribute="_id") is None
     else:
-        assert vars(binary_search(data=unsorted_list, target=target)) == vars(
-            expected_target
+        assert (
+            binary_search(data=unsorted_list, target=target, attribute="_id")
+            == expected_target
         )
-        assert vars(binary_search(data=sorted_list, target=target)) == vars(
-            expected_target
+        assert (
+            binary_search(data=sorted_list, target=target, attribute="_id")
+            == expected_target
         )
 
 
@@ -89,6 +98,7 @@ def test_search_data():
         time="01:30",
         location="",
     )
+    expected_target.id = target_id
 
     # Linear search
     assert vars(

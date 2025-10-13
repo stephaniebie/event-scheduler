@@ -1,7 +1,7 @@
 from scheduler.event import EventNode
 from scheduler.defaults import INITIAL_ID
-from scheduler.search import SearchAlgorithm, search_data
 from scheduler.sort import sort_data, SortingAlgorithm
+from scheduler.search import SearchAlgorithm, search_data
 
 
 class LinkedEventList:
@@ -127,21 +127,28 @@ class LinkedEventList:
             An event to be removed from the list
             If None, defaults to index-based deletion
         """
+        # Deal with empty list
+        if self.head is None:
+            raise IndexError("Trying to delete from empty list")
         # Delete at specific index
         if event is None:
             # Validate index
-            if index == -1:
-                index = self.size
-            elif index + 1 > self.size:
+            if index < 0:
+                index = self.size + index
+            if index < 0 or index >= self.size:
                 raise IndexError(f"Index {index} is out of range")
 
             # Remove node at specific index
-            node = self.head
-            if node is not None:
-                while index > 1:
-                    index -= 1
-                    node = node.next
-                node.next = node.next.next
+            if index == 0:
+                self.head = self.head.next
+            else:
+                node = self.head
+                prev_node = None
+                if node is not None:
+                    for _ in range(index):
+                        prev_node = node
+                        node = node.next
+                    prev_node.next = node.next
 
             # Decrease size of list
             self.size -= 1

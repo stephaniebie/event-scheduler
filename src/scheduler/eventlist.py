@@ -1,6 +1,6 @@
 from scheduler.event import Event
-from scheduler.search import search_data, SearchAlgorithm
 from scheduler.sort import sort_data, SortingAlgorithm
+from scheduler.search import search_data, SearchAlgorithm
 from scheduler.defaults import INITIAL_ID, INITIAL_CAPACITY
 
 
