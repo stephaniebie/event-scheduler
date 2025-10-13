@@ -61,6 +61,8 @@ class LinkedEventList:
             for k, v in vars(value).items():
                 if k not in ["next"]:
                     setattr(node, k, v)
+            if "_id" not in vars(value):
+                delattr(node, "_id")
         else:
             raise TypeError(f"Invalid index type {type(index)}")
 
@@ -156,11 +158,13 @@ class LinkedEventList:
         # Delete by matching event attributes
         else:
             node = self.head
+            prev_node = None
             while node:
                 if node == event:
-                    node.next = node.next.next
+                    prev_node.next = node.next
                     # Decrease size of list
                     self.size -= 1
+                prev_node = node
                 node = node.next
 
     def search_by_id(

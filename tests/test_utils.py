@@ -5,8 +5,9 @@ class DummyClass:
     def __init__(self, property):
         self.property = property
 
+
 def test_parse_object():
-    dummy_object = DummyClass(property = "test")
+    dummy_object = DummyClass(property="test")
 
     # No parsing for attribute
     object = parse_object(dummy_object, attribute=None)
