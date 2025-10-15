@@ -41,6 +41,7 @@ def linear_search(data, target, attribute: str | None = None):
 def binary_search(data, target, attribute: str | None = None):
     """
     Searches through an iterable for an item matching the target using the classic binary search algorithm.
+    NOTE: This algorithm assumes that data is already sorted.
 
     Parameters
     ----------
@@ -56,9 +57,6 @@ def binary_search(data, target, attribute: str | None = None):
     -------
     The found item or None if not found
     """
-    # Ensure the data is sorted
-    data = sort_data(data=data, attribute=attribute)
-
     # Initialize min and max indices
     low = 0
     high = len(data) - 1

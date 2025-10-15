@@ -68,13 +68,8 @@ def test_search(target, expected_target):
 
     # Binary search
     if expected_target is None:
-        assert binary_search(data=unsorted_list, target=target, attribute="_id") is None
         assert binary_search(data=sorted_list, target=target, attribute="_id") is None
     else:
-        assert (
-            binary_search(data=unsorted_list, target=target, attribute="_id")
-            == expected_target
-        )
         assert (
             binary_search(data=sorted_list, target=target, attribute="_id")
             == expected_target
@@ -110,7 +105,7 @@ def test_search_data():
     # Binary search
     assert vars(
         search_data(
-            data=unsorted_list, target=target_id, algorithm=SearchAlgorithm.BINARY
+            data=sorted_list, target=target_id, algorithm=SearchAlgorithm.BINARY
         )
     ) == vars(expected_target)
 

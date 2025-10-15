@@ -166,6 +166,9 @@ class EventList:
         -------
         The Event object that was found
         """
+        # Sort data before performing binary search
+        if algorithm == SearchAlgorithm.BINARY:
+            self = sort_data(data=self, attribute="_id")
         # Searches for ID in the list of events
         found_event = search_data(data=self, target=id, algorithm=algorithm)
         if found_event is None:

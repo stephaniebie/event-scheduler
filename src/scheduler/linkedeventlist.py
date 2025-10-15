@@ -35,7 +35,7 @@ class LinkedEventList:
         if isinstance(index, int):
             # Validate index
             if index < 0:
-                index = self.size + index
+                index += self.size
             if index < 0 or index >= self.size:
                 raise IndexError(f"Index {index} is out of range")
             # Get node
@@ -51,7 +51,7 @@ class LinkedEventList:
         if isinstance(index, int):
             # Validate index
             if index < 0:
-                index = self.size + index
+                index += self.size
             if index < 0 or index >= self.size:
                 raise IndexError(f"Index {index} is out of range")
             # Set node
@@ -85,33 +85,35 @@ class LinkedEventList:
         if not isinstance(event, EventNode):
             raise TypeError(f"Cannot insert event of type {type(event)}")
         # Check if event overlaps with an existing event
-        has_conflict = False
         node = self.head
-        while node and not has_conflict:
-            has_conflict = event.collides_with(node)
+        while node:
+            if event.collides_with(node):
+                raise ValueError("Conflict detected, cannot insert event")
             node = node.next
-        if has_conflict:
-            raise ValueError("Conflict detected, cannot insert event")
 
         # Insert event if no conflict detected
         # Set event ID
         event.id = self._id
         # Validate index
-        if index == -1:
-            index = self.size
-        elif index + 1 > self.size:
+        if index < 0:
+            index += self.size + 1
+        if index < 0:
+            index = 0
+        if index > self.size:
             raise IndexError(f"Index {index} is out of range")
+
         # Iterate through linked list to insert index
         node = self.head
-        if node is None:
+        if node is None or index == 0:
+            event.next = self.head
             self.head = event
-            event.next = None
         else:
-            while index > 1:
-                index -= 1
+            node = self.head
+            for _ in range(index - 1):
                 node = node.next
             event.next = node.next
             node.next = event
+
         # Sequentially generate a new ID upon insertion
         self._id += 1
         # Increment size
@@ -136,7 +138,7 @@ class LinkedEventList:
         if event is None:
             # Validate index
             if index < 0:
-                index = self.size + index
+                index += self.size
             if index < 0 or index >= self.size:
                 raise IndexError(f"Index {index} is out of range")
 
@@ -184,9 +186,10 @@ class LinkedEventList:
         -------
         The EventNode object that was found
         """
-        found_event = search_data(
-            data=self.list_all(sort=False), target=id, algorithm=algorithm
-        )
+        # Sort data before performing binary search
+        if algorithm == SearchAlgorithm.BINARY:
+            self = sort_data(data=self, attribute="_id")
+        found_event = search_data(data=self, target=id, algorithm=algorithm)
         if found_event is None:
             raise ValueError(f"Could not find ID {id} in event list")
         return found_event
