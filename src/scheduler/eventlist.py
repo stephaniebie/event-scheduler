@@ -34,7 +34,7 @@ class EventList:
             yield self.events[i]
 
     def __getitem__(self, index: int | slice) -> Event | list:
-        if 0<= index < self.size:
+        if 0 <= index < self.size:
             return self.events[index]
         else:
             raise IndexError("Index out of range")

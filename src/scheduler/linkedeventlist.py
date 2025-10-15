@@ -167,7 +167,7 @@ class LinkedEventList:
                         self.head = node.next
                         # Decrease size of list
                         self.size -= 1
-                        print('block1',node.title)
+                        print("block1", node.title)
                         break
                     else:
                         prev_node.next = node.next
