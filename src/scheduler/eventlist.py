@@ -30,12 +30,14 @@ class EventList:
         self.events = [None] * self.capacity
 
     def __iter__(self):
-        return iter(self.list_all(sort=False))
+        for i in range(self.size):
+            yield self.events[i]
 
     def __getitem__(self, index: int | slice) -> Event | list:
-        if isinstance(index, (int, slice)):
-            return self.list_all(sort=False)[index]
-        raise TypeError(f"Invalid index type {type(index)}")
+        if 0<= index < self.size:
+            return self.events[index]
+        else:
+            raise IndexError("Index out of range")
 
     def __setitem__(self, index: int | slice, value: Event | list):
         # TODO: Maybe some conflict detection here?

@@ -7,7 +7,6 @@ if TYPE_CHECKING:
     from scheduler.linkedeventlist import LinkedEventList
 
 from enum import Enum, member
-from scheduler.sort import sort_data
 from scheduler.utils import parse_object
 from scheduler.event import Event, EventNode
 
