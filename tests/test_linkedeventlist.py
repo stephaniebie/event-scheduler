@@ -1,14 +1,13 @@
 import pytest
 from random import shuffle
-from scheduler.event import Event
+from scheduler.event import EventNode
 from datetime import datetime, timedelta
-from scheduler.eventlist import EventList
 from scheduler.search import SearchAlgorithm
-from scheduler.defaults import INITIAL_CAPACITY
+from scheduler.linkedeventlist import LinkedEventList
 
 
 # Initialize event list
-event_list = EventList()
+event_list = LinkedEventList()
 num_events = 25
 
 # Create random indices
@@ -22,12 +21,12 @@ for i, idx in enumerate(indices):
     )
     date, time = dt.split(" ")
     event_list.insert(
-        Event(
+        EventNode(
             title=f"Event {i + 1}", date=date, time=time, location=f"Location {idx + 1}"
         )
     )
 
-new_event = Event(title="", date="2050-10-15", time="23:59", location="")
+new_event = EventNode(title="", date="2050-10-15", time="23:59", location="")
 
 
 def test_magic_functions():
@@ -36,16 +35,16 @@ def test_magic_functions():
 
     # Iterator
     for e in event_list:
-        assert isinstance(e, Event)
+        assert isinstance(e, EventNode)
 
     # Getitem
-    assert isinstance(event_list[0], Event)
+    assert isinstance(event_list[0], EventNode)
 
     # Setitem
     original_event = event_list[2]
     event_list[2] = new_event
-    assert event_list.events[2] != original_event
-    assert event_list.events[2] == new_event
+    assert event_list[2] != original_event
+    assert event_list[2] == new_event
     event_list[2] = original_event
     # Catch type errors
     with pytest.raises(TypeError) as exception:
@@ -53,21 +52,10 @@ def test_magic_functions():
     assert f"Invalid index type {str}" == str(exception.value)
 
 
-def test_resize():
-    # Initialize event list
-    another_event_list = EventList()
-    assert len(another_event_list.events) == INITIAL_CAPACITY
-
-    # Resize the array
-    another_event_list._resize(new_capacity=INITIAL_CAPACITY + 10)
-    assert len(another_event_list.events) == INITIAL_CAPACITY + 10
-    assert another_event_list.capacity == INITIAL_CAPACITY + 10
-
-
 def test_insert():
     # Check the order of the IDs
-    expected_ids = sorted([i + 1 for i in indices]) + [None] * 6
-    actual_ids = [event.id if event else event for event in event_list.events]
+    expected_ids = sorted([i + 1 for i in indices])
+    actual_ids = [event.id for event in event_list]
     assert actual_ids == expected_ids
 
     # Catch invalid types
@@ -78,13 +66,14 @@ def test_insert():
     # Catch conflicts
     with pytest.raises(ValueError) as exception:
         event_list.insert(
-            Event(title="Conflicting Event", date=date, time=time, location="Anywhere")
+            EventNode(
+                title="Conflicting Event", date=date, time=time, location="Anywhere"
+            )
         )
     assert "Conflict detected, cannot insert event" == str(exception.value)
 
     # Insert at index
     event_list.insert(event=new_event, index=1)
-    assert event_list.events[1] == new_event
     assert event_list[1] == new_event
     event_list.delete(event=new_event)
     with pytest.raises(IndexError) as exception:
@@ -102,23 +91,13 @@ def test_delete():
     original_event = event_list[index]
     event_list.delete(index=index)
     assert event_list[index] != original_event
-    assert (
-        sum(
-            [event == original_event if event else False for event in event_list.events]
-        )
-        == 0
-    )
+    assert sum([event == original_event for event in event_list]) == 0
     event_list.insert(original_event, index=index)
 
     # Delete by event
     event_list.delete(event=original_event)
     assert event_list[index] != original_event
-    assert (
-        sum(
-            [event == original_event if event else False for event in event_list.events]
-        )
-        == 0
-    )
+    assert sum([event == original_event for event in event_list]) == 0
     event_list.insert(original_event, index=index)
 
 
@@ -130,7 +109,7 @@ def test_search_by_id():
         "%Y-%m-%d %H:%M",
     )
     date, time = dt.split(" ")
-    expected_event = Event(
+    expected_event = EventNode(
         title=f"Event {event_id}",
         date=date,
         time=time,
