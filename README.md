@@ -131,5 +131,21 @@ Two events are considered equal if all attributes are equivalent (excluding `nex
 
 The philosophy behind designing the `EventList` and `LinkedEventList` classes as iterators is to allow for generalizing the sorting and searching algorithms. Both categories of algorithms apply to any iterable object that supports setting and getting elements in the iterator.
 
-## Results
-# TODO
+## Results Overview
+### Performance of sorting on array- based list 
+For testing sizes 50, 500, 5000, 1000 Insertion sort showed a linear increase. The time taken to sort events was proportional to number of events. Merge sort and Quick sort had overlapping sorting time intervals. The graph is a straight line. For large sizes quick sort was an efficient algorithm to sort events. 
+
+### Performance of sorting on linked list 
+For testing sizes 50, 500, 5000, 1000 Insertion sort showed a linear increase. The time taken to sort events was proportional to number of events. Merge sort and Quick sort had overlapping sorting time intervals. The graph is a straight line. For large sizes quick sort was an efficient algorithm to sort events. 
+
+### Performance for searching on sorted array-based list 
+Time taken for linear search for searching in events increases according to the number of events. Time taken for Binary search increments in small amounts for different testing sizes. Binary search is an efficient approach. 
+
+### Performance for searching on sorted linked list 
+Linear search performs efficiently on a sorted linked list as compared to Binary search since linked list is already sorted. Time complexity for linear search is O(N). Time complexity for binary search is O(N log N).
+
+### Performance for searching on unsorted array-based list
+Binary search performs efficiently in comparison to linear search. Time required by linear search for searching increases with testing size.  
+
+### Performance for searching on unsorted linked list
+Binary search performs efficiently in comparison to linear search. Time required by linear search for searching increases with testing size.  

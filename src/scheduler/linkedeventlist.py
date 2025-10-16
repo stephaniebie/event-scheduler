@@ -163,9 +163,16 @@ class LinkedEventList:
             prev_node = None
             while node:
                 if node == event:
-                    prev_node.next = node.next
-                    # Decrease size of list
-                    self.size -= 1
+                    if prev_node is None:
+                        self.head = node.next
+                        # Decrease size of list
+                        self.size -= 1
+                        break
+                    else:
+                        prev_node.next = node.next
+                        # Decrease size of list
+                        self.size -= 1
+                        break
                 prev_node = node
                 node = node.next
 
