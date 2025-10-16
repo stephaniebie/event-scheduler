@@ -26,8 +26,6 @@ class Event:
             The date the event will take place in the form YYYY-MM-DD
         time: str
             The time the event will take place in the form HH:MM
-        datetime: tuple | None
-            A tuple composed of the inputted date and time
         location: str
             The location of the event
         """
@@ -116,8 +114,6 @@ class EventNode(Event):
             The date the event will take place in the form YYYY-MM-DD
         time: str
             The time the event will take place in the form HH:MM
-        datetime: tuple | None
-            A tuple composed of the inputted date and time
         location: str
             The location of the event
         next: None | EventNode
